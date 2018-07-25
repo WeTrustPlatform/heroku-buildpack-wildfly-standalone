@@ -49,7 +49,7 @@ curl -o $HIBERNATE_ZIP https://search.maven.org/remotecontent?filepath=org/hiber
 echo "downloaded";
 sha1sum $HIBERNATE_ZIP | grep $HIBERNATE_SHA1 > /dev/null 2>&1;
 echo "verified";
-tar xf $HIBERNATE_ZIP;
+unzip $HIBERNATE_ZIP;
 echo "extracted";
 cp -r org $JBOSS_HOME/modules/system/layers/base/;
 echo "copied hibernate into wildfly";
