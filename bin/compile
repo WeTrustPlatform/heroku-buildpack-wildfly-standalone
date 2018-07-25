@@ -44,7 +44,7 @@ HIBERNATE_VERSION="5.2.17.Final";
 HIBERNATE_SHA1="598b9bfd24eb6dc27020af8fd8d058c8a2e73dac";
 HIBERNATE_ZIP="hibernate.zip";
 
-echo -n "-----> Installing hibernate ${WILDFLY_VERSION}... ";
+echo -n "-----> Installing hibernate ${HIBERNATE_VERSION}... ";
 curl -o $HIBERNATE_ZIP https://search.maven.org/remotecontent?filepath=org/hibernate/hibernate-orm-modules/$HIBERNATE_VERSION/hibernate-orm-modules-$HIBERNATE_VERSION-wildfly-11-dist.zip;
 echo "downloaded";
 sha1sum $HIBERNATE_ZIP | grep $HIBERNATE_SHA1 > /dev/null 2>&1;
@@ -57,6 +57,29 @@ rm $HIBERNATE_ZIP;
 rm -rf org;
 echo "done";
 
+POSTGRES_DRIVER_VERSION="42.2.4";
+POSTGRES_DRIVER_SHA1="dff98730c28a4b3a3263f0cf4abb9a3392f815a7";
+
+echo -n "-----> Installing postgres driver ${POSTGRES_DRIVER_VERSION}... ";
+curl -O https://jdbc.postgresql.org/download/postgresql-$POSTGRES_DRIVER_VERSION.jar;
+echo "downloaded";
+sha1sum postgresql-$POSTGRES_DRIVER_VERSION.jar | grep $POSTGRES_DRIVER_SHA1 > /dev/null 2>&1;
+echo "verified";
+mkdir -p $JBOSS_HOME/modules/system/layers/base/org/postgresql/main/;
+echo "created postgresql main folder";
+mv postgresql-$POSTGRES_DRIVER_VERSION.jar $JBOSS_HOME/modules/system/layers/base/org/postgresql/main/;
+echo "moved postgresql jar file";
+echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<module xmlns=\"urn:jboss:module:1.5\" name=\"org.postgresql\">
+    <resources>
+        <resource-root path=\"postgresql-$POSTGRES_DRIVER_VERSION.jar\"/>
+    </resources>
+    <dependencies>
+        <module name=\"javax.api\"/>
+        <module name=\"javax.transaction.api\"/>
+    </dependencies>
+</module>" > $JBOSS_HOME/modules/system/layers/base/org/postgresql/main/module.xml;
+echo "done";
 
 echo "-----> Creating configuration...";
 if [ -f $BUILD_DIR/Procfile ]; then
