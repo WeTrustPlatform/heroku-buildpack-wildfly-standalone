@@ -90,7 +90,17 @@ web: \$JBOSS_HOME/bin/standalone.sh -b=0.0.0.0 -Djboss.http.port=\$PORT
 EOF
 fi;
 
+echo "-----> Dry running...";
+export JBOSS_BASE_DIR=$BUILD_DIR/executor;
+cd $JBOSS_HOME/bin && ./standalone.sh --server-config=standalone-full.xml;
+sleep 10;
+kill $(ps aux | grep 'standalone' | awk '{print $2}');
+echo "listing folders";
+ls $JBOSS_BASE_DIR;
+echo "done";
+
 cat << EOF > $BUILD_DIR/.profile.d/jboss.sh
 export JBOSS_HOME=/app/${JBOSS_HOME};
 chmod 755 /app/$JBOSS_HOME/jboss-modules.jar;
 EOF
+
