@@ -92,7 +92,7 @@ fi;
 
 echo "-----> Dry running...";
 export JBOSS_BASE_DIR=$BUILD_DIR/executor;
-cd $JBOSS_HOME/bin && ./standalone.sh --server-config=standalone-full.xml;
+nohup (cd $JBOSS_HOME/bin && ./standalone.sh --server-config=standalone-full.xml) &;
 killall -9 java;
 echo "listing folders";
 ls $JBOSS_BASE_DIR;
